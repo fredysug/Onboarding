@@ -1,25 +1,60 @@
 package com.example.woi.test.data
 
-import org.junit.Assert.assertEquals
+import com.example.woi.test.data.remote.RemoteGateway
+import com.example.woi.test.utils.*
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.whenever
+import io.reactivex.Single
+import org.junit.Before
 import org.junit.Test
 
 class UserRepositoryImplTest {
+    private lateinit var repo: UserRepository
+    private lateinit var gateway: RemoteGateway
 
-    @Test
-    fun testGetUser() {
-        val repo = UserRepositoryImpl()
-
-        val expectedUser = User("randomUser", "avatarUrl")
-        assertEquals(expectedUser, repo.getUser())
+    @Before
+    fun setup() {
+        gateway = mock()
+        repo = UserRepositoryImpl(gateway)
     }
 
     @Test
-    fun testGetFriendList() {
-        val repo = UserRepositoryImpl()
-        var friendList = (1..10).map {
-            User(it.toString(), "user-$it")
+    fun testGetUsers() {
+        val expectedUserCount = 20
+        whenever(gateway.getUsers()).thenReturn(Single.just(generateUser(expectedUserCount)))
+
+        repo.getUsers().test().assertValue {
+            it.size == expectedUserCount
         }
 
-        assertEquals(friendList, repo.getFriendList())
+        verify(gateway).getUsers()
     }
+
+    @Test
+    fun testGetPosts() {
+        val userId = 1
+        val expectedPostCount = 10
+        val generatedPost = generatePost(userId, expectedPostCount)
+
+        whenever(gateway.getPosts(userId.toString())).thenReturn(Single.just(generatedPost))
+
+        repo.getPosts(userId.toString()).test().assertValue {
+            it.size == expectedPostCount
+        }
+    }
+
+    @Test
+    fun testGetComments() {
+        val postId = 1
+        val expectedPostCount = 10
+        val generatedComment = generateComment(postId, expectedPostCount)
+
+        whenever(gateway.getComments(postId.toString())).thenReturn(Single.just(generatedComment))
+
+        repo.getComments(postId.toString()).test().assertValue {
+            it.size == expectedPostCount
+        }
+    }
+
 }

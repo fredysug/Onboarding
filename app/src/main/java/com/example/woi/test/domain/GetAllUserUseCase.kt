@@ -4,14 +4,15 @@ import com.example.woi.test.data.UserRepository
 import com.example.woi.test.utils.User
 import io.reactivex.Single
 
-interface GetFriendListReverseOrderUseCase {
+interface GetAllUserUseCase{
     fun execute(): Single<List<User>>
 }
 
-class GetFriendListReverseOrderUseCaseImpl(private val userRepository: UserRepository) :
-    GetFriendListReverseOrderUseCase {
+class GetAllUserUseCaseImpl(
+    private val userRepository: UserRepository
+): GetAllUserUseCase{
     override fun execute(): Single<List<User>> {
-        TODO()
+        return userRepository.getUsers()
     }
 
 }
