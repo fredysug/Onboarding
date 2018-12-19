@@ -1,8 +1,9 @@
 package com.example.woi.test.presentation
 
 import com.example.woi.test.domain.GetAllUserUseCase
+import com.example.woi.test.presentation.users.UserPresenterImpl
+import com.example.woi.test.presentation.users.UserView
 import com.example.woi.test.utils.generateUser
-import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
@@ -10,21 +11,18 @@ import io.reactivex.Single
 import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
-import org.junit.After
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
 import org.junit.runner.Description
-import org.junit.runner.RunWith
 import org.junit.runners.model.Statement
-import org.mockito.junit.MockitoJUnitRunner
 
-class MainPresenterImplTest {
+class UserPresenterImplTest {
     private lateinit var getAllUserUseCase: GetAllUserUseCase
-    private lateinit var mainPresenter: MainPresenterImpl
-    private lateinit var mainView: View
+    private lateinit var userPresenter: UserPresenterImpl
+    private lateinit var mainView: UserView
 
     @get:Rule
     val rule = TrampolineSchedulerRule()
@@ -32,9 +30,9 @@ class MainPresenterImplTest {
     @Before
     fun setup() {
         getAllUserUseCase = mock()
-        mainPresenter = MainPresenterImpl(getAllUserUseCase)
+        userPresenter = UserPresenterImpl(getAllUserUseCase)
         mainView = mock()
-        mainPresenter.attach(mainView)
+        userPresenter.attach(mainView)
     }
 
     @Test
@@ -43,7 +41,7 @@ class MainPresenterImplTest {
         val expectedResult = generateUser(expectedTotalUser)
         whenever(getAllUserUseCase.execute()).thenReturn(Single.just(expectedResult))
 
-        mainPresenter.loadUsers()
+        userPresenter.loadUsers()
 
         verify(mainView).showAllUser(expectedResult)
     }
@@ -53,15 +51,15 @@ class MainPresenterImplTest {
         val expectedResult = "Internal Server Error"
         whenever(getAllUserUseCase.execute()).thenReturn(Single.error(Throwable(expectedResult)))
 
-        mainPresenter.loadUsers()
+        userPresenter.loadUsers()
 
         verify(mainView).showErrorMessage(expectedResult)
     }
 
     @Test
     fun detachShouldRemoveView() {
-        mainPresenter.detach()
-        assertTrue(mainPresenter.disposable.isDisposed)
+        userPresenter.detach()
+        assertTrue(userPresenter.disposable.isDisposed)
     }
 }
 

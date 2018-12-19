@@ -1,4 +1,4 @@
-package com.example.woi.test.presentation
+package com.example.woi.test.presentation.users
 
 import com.example.woi.test.domain.GetAllUserUseCase
 import com.example.woi.test.utils.User
@@ -6,25 +6,27 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
-interface View {
+interface UserView {
     fun showAllUser(users: List<User>)
     fun showErrorMessage(errorMessage: String)
+    fun openPost(userId: String)
 }
 
-interface MainPresenter {
-    fun attach(view: View)
+interface UserPresenter {
+    fun attach(view: UserView)
     fun detach()
     fun loadUsers()
+    fun openPost(userId: String)
 }
 
-class MainPresenterImpl(
+class UserPresenterImpl(
     private val getAllUserUseCase: GetAllUserUseCase
-) : MainPresenter {
+) : UserPresenter {
 
-    lateinit var view: View
+    lateinit var view: UserView
     var disposable = CompositeDisposable()
 
-    override fun attach(view: View) {
+    override fun attach(view: UserView) {
         this.view = view
     }
 
@@ -44,5 +46,9 @@ class MainPresenterImpl(
             }, {
                 view.showErrorMessage(it.message ?: "Unknown Error")
             })
+    }
+
+    override fun openPost(userId: String){
+        view.openPost(userId)
     }
 }

@@ -8,11 +8,7 @@ import com.example.woi.test.R
 import com.example.woi.test.utils.User
 import kotlinx.android.synthetic.main.item_user.view.*
 
-class UserAdapter(var users: List<User>) : RecyclerView.Adapter<UserViewHolder>() {
-    override fun onBindViewHolder(p0: UserViewHolder, p1: Int) {
-        p0.itemView.username.text = users[p1].username
-    }
-
+class UserAdapter(var users: List<User>, val listener: OnItemClickListener) : RecyclerView.Adapter<UserViewHolder>() {
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): UserViewHolder {
         val view = LayoutInflater.from(p0.context).inflate(R.layout.item_user, p0, false)
         return UserViewHolder(view)
@@ -21,6 +17,17 @@ class UserAdapter(var users: List<User>) : RecyclerView.Adapter<UserViewHolder>(
     override fun getItemCount(): Int {
         return users.size
     }
+
+    override fun onBindViewHolder(userViewHolder: UserViewHolder, position: Int) {
+        userViewHolder.itemView.username.text = users[position].username
+        userViewHolder.itemView.setOnClickListener {
+            listener.onItemClick(users[position])
+        }
+    }
 }
 
 class UserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+
+interface OnItemClickListener {
+    fun onItemClick(user: User)
+}
