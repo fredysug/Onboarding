@@ -26,6 +26,7 @@ class UsersActivity : AppCompatActivity(), View {
         setContentView(R.layout.activity_users)
 
         rvUsers.adapter = UserAdapter(emptyList())
+        rvUsers.isAnimating
         rvUsers.layoutManager = LinearLayoutManager(this)
 
         presenter.attach(this)
