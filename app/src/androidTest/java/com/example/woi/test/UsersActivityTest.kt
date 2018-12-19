@@ -81,7 +81,7 @@ class UsersActivityTest {
 
     private fun isItemTextShown(position: Int, textMatcher: String) = object : TypeSafeMatcher<View>() {
         override fun describeTo(description: Description?) {
-            description?.appendText("Error")
+            description?.appendText("Errore")
         }
 
         override fun matchesSafely(item: View?): Boolean {
